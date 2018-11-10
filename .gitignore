@@ -1,0 +1,5 @@
+// Jetbrains WebStorm files
+.idea
+
+// Node modules
+node_modules
