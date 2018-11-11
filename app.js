@@ -1,9 +1,29 @@
-const createError = require('http-errors');
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const express = require('express'),
+    createError = require('http-errors'),
+    path = require('path'),
+    bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
+    logger = require('morgan'),
+    mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/yelp_camp');
+
+// Schema setup
+const campgroundSchema = new mongoose.Schema({
+    name: String,
+    image: String,
+    description: String
+});
+
+const Campground = mongoose.model('Campground', campgroundSchema);
+
+/*Campground.create(
+    {
+        name: "Salmon Creek",
+        image: "https://picsum.photos/200/300/?random",
+        description: "Perfect for fishing"
+    }
+);*/
 
 const app = express();
 
@@ -37,20 +57,35 @@ const campgrounds = [
 ];
 
 app.get('/campgrounds', (req, res, next) => {
-    res.render('campgrounds', {campgrounds: campgrounds});
+    Campground.find({}, (err, campgrounds) => {
+        if(err) console.log(err);
+        else res.render('index.ejs', {campgrounds: campgrounds});
+    });
 });
 
 app.get('/campgrounds/new', (req, res, next) => {
     res.render("new");
 });
 
-app.post('/campgrounds', (req, res, next) => {
-    const name = req.body.name;
-    const image = req.body.image;
-    const campground = {name: name, image:image};
-    campgrounds.push(campground);
+app.get('/campgrounds/:id', (req, res, next) => {
+    const id = req.params.id;
+    Campground.findById(id, (err, campground) => {
+        if(err) console.log(err);
+        else res.render("show", {campground: campground});
+    });
+});
 
-    res.redirect('/campgrounds');
+app.post('/campgrounds', (req, res, next) => {
+    const campground = {
+        name: req.body.name,
+        image: req.body.image,
+        description: req.body.description
+    };
+
+    Campground.create(campground, (err, campground) => {
+        if(err) console.log(err);
+        else res.redirect('/campgrounds');
+    });
 });
 
 // Catch 404 and forward to error handler
