@@ -27,7 +27,13 @@ app.get('/', (req, res, next) => {
 const campgrounds = [
     {name: "Salmon Creek", image: "https://picsum.photos/200/300/?random"},
     {name: "Granite Hill", image: "https://picsum.photos/200/300/?random"},
-    {name: "Mountain Goat's Rest", image: "https://picsum.photos/200/300/?random"}
+    {name: "Mountain Goat's Rest", image: "https://picsum.photos/200/300/?random"},
+    {name: "Salmon Creek", image: "https://picsum.photos/200/300/?random"},
+    {name: "Granite Hill", image: "https://picsum.photos/200/300/?random"},
+    {name: "Mountain Goat's Rest", image: "https://picsum.photos/200/300/?random"},
+    {name: "Salmon Creek", image: "https://picsum.photos/200/300/?random"},
+    {name: "Granite Hill", image: "https://picsum.photos/200/300/?random"},
+    {name: "Mountain Goat's Rest", image: "https://picsum.photos/200/300/?random"},
 ];
 
 app.get('/campgrounds', (req, res, next) => {
