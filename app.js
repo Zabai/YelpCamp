@@ -18,6 +18,19 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routing
+app.get('/', (req, res, next) => {
+    res.render('landing');
+});
+
+app.get('/campgrounds', (req, res, next) => {
+    const campgrounds = [
+        {name: "Salmon Creek", image: "https://picsum.photos/200/300/?random"},
+        {name: "Granite Hill", image: "https://picsum.photos/200/300/?random"},
+        {name: "Mountain Goat's Rest", image: "https://picsum.photos/200/300/?random"}
+    ];
+
+    res.render('campgrounds', {campgrounds: campgrounds});
+});
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -32,7 +45,7 @@ app.use(function(err, req, res, next) {
 
     // Render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.send('error');
 });
 
 module.exports = app;
