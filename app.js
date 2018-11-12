@@ -1,7 +1,6 @@
 const express = require('express'),
     createError = require('http-errors'),
     path = require('path'),
-    bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     logger = require('morgan'),
     mongoose = require('mongoose');
@@ -22,8 +21,7 @@ app.set('view engine', 'ejs');
 // Middleware
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

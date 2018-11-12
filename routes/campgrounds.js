@@ -7,7 +7,7 @@ const router = require('express').Router(),
 router.get('/', (req, res, next) => {
     Campground.find({}, (err, campgrounds) => {
         if(err) console.log(err);
-        else res.render('index.ejs', {campgrounds: campgrounds});
+        else res.render('campgrounds/index.ejs', {campgrounds: campgrounds});
     });
 });
 
@@ -21,7 +21,7 @@ router.get('/:id', (req, res, next) => {
     const id = req.params.id;
     Campground.findById(id).populate('comments').exec((err, campground) => {
         if(err) console.log(err);
-        else res.render("show", {campground: campground});
+        else res.render("campgrounds/show.ejs", {campground: campground});
     });
 });
 
