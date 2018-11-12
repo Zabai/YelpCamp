@@ -19,7 +19,7 @@ router.get('/new', (req, res, next) => {
 // SHOW
 router.get('/:id', (req, res, next) => {
     const id = req.params.id;
-    Campground.findById(id, (err, campground) => {
+    Campground.findById(id).populate('comments').exec((err, campground) => {
         if(err) console.log(err);
         else res.render("show", {campground: campground});
     });

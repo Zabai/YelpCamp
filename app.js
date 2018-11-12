@@ -10,6 +10,7 @@ mongoose.connect('mongodb://localhost/yelp_camp');
 
 // Models
 require('./models/Campground');
+require('./models/Comment');
 require('./config/seed');
 
 const app = express();
