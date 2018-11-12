@@ -8,22 +8,9 @@ const express = require('express'),
 
 mongoose.connect('mongodb://localhost/yelp_camp');
 
-// Schema setup
-const campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-const Campground = mongoose.model('Campground', campgroundSchema);
-
-/*Campground.create(
-    {
-        name: "Salmon Creek",
-        image: "https://picsum.photos/200/300/?random",
-        description: "Perfect for fishing"
-    }
-);*/
+// Models
+require('./models/Campground');
+require('./config/seed');
 
 const app = express();
 
@@ -40,61 +27,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routing
-app.get('/', (req, res, next) => {
-    res.render('landing');
-});
-
-const campgrounds = [
-    {name: "Salmon Creek", image: "https://picsum.photos/200/300/?random"},
-    {name: "Granite Hill", image: "https://picsum.photos/200/300/?random"},
-    {name: "Mountain Goat's Rest", image: "https://picsum.photos/200/300/?random"},
-    {name: "Salmon Creek", image: "https://picsum.photos/200/300/?random"},
-    {name: "Granite Hill", image: "https://picsum.photos/200/300/?random"},
-    {name: "Mountain Goat's Rest", image: "https://picsum.photos/200/300/?random"},
-    {name: "Salmon Creek", image: "https://picsum.photos/200/300/?random"},
-    {name: "Granite Hill", image: "https://picsum.photos/200/300/?random"},
-    {name: "Mountain Goat's Rest", image: "https://picsum.photos/200/300/?random"},
-];
-
-app.get('/campgrounds', (req, res, next) => {
-    Campground.find({}, (err, campgrounds) => {
-        if(err) console.log(err);
-        else res.render('index.ejs', {campgrounds: campgrounds});
-    });
-});
-
-app.get('/campgrounds/new', (req, res, next) => {
-    res.render("new");
-});
-
-app.get('/campgrounds/:id', (req, res, next) => {
-    const id = req.params.id;
-    Campground.findById(id, (err, campground) => {
-        if(err) console.log(err);
-        else res.render("show", {campground: campground});
-    });
-});
-
-app.post('/campgrounds', (req, res, next) => {
-    const campground = {
-        name: req.body.name,
-        image: req.body.image,
-        description: req.body.description
-    };
-
-    Campground.create(campground, (err, campground) => {
-        if(err) console.log(err);
-        else res.redirect('/campgrounds');
-    });
-});
+app.use(require('./routes'));
 
 // Catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
     next(createError(404));
 });
 
 // Error handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
     // Set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
