@@ -21,15 +21,13 @@ router.post('/', (req, res, next) => {
         if(err) res.redirect('/campgrounds');
         else {
             const newComment = req.body.comment;
+            newComment.author = {
+                id: req.user._id,
+                username: req.user.username
+            };
             Comment.create(newComment, (err, comment) => {
                 if(err) res.redirect('/campgrounds/' + id + '/comments/new');
                 else {
-                    comment.author = {
-                        id: req.user._id,
-                        username: req.user.username
-                    };
-                    comment.save();
-
                     campground.comments.push(comment);
                     campground.save();
                     res.redirect('/campgrounds/' + id);
