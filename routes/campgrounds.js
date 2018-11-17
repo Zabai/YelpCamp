@@ -1,6 +1,7 @@
 const router = require('express').Router(),
     mongoose = require('mongoose'),
-    Campground = mongoose.model('Campground');
+    Campground = mongoose.model('Campground'),
+    isLoggedIn = require('../middlewares/authentication').isLoggedIn;
 
 // Base: /campgrounds
 // INDEX
@@ -12,7 +13,7 @@ router.get('/', (req, res, next) => {
 });
 
 // NEW
-router.get('/new', (req, res, next) => {
+router.get('/new', isLoggedIn, (req, res, next) => {
     res.render("campgrounds/new.ejs");
 });
 
@@ -26,11 +27,15 @@ router.get('/:id', (req, res, next) => {
 });
 
 // CREATE
-router.post('/', (req, res, next) => {
+router.post('/', isLoggedIn, (req, res, next) => {
     const campground = {
         name: req.body.name,
         image: req.body.image,
-        description: req.body.description
+        description: req.body.description,
+        author: {
+            id: req.user._id,
+            username: req.user.username
+        }
     };
 
     Campground.create(campground, (err, campground) => {
