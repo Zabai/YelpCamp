@@ -13,7 +13,7 @@ router.get('/', (req, res, next) => {
 
 // NEW
 router.get('/new', (req, res, next) => {
-    res.render("new");
+    res.render("campgrounds/new.ejs");
 });
 
 // SHOW

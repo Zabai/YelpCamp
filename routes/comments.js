@@ -4,6 +4,7 @@ const router = require('express').Router({mergeParams: true}),
     Comment = mongoose.model('Comment');
 
 // Base: /campgrounds/:id/comments
+// Requirements: user authenticated
 // NEW
 router.get('/new', (req, res, next) => {
     const id = req.params.id;
@@ -23,6 +24,12 @@ router.post('/', (req, res, next) => {
             Comment.create(newComment, (err, comment) => {
                 if(err) res.redirect('/campgrounds/' + id + '/comments/new');
                 else {
+                    comment.author = {
+                        id: req.user._id,
+                        username: req.user.username
+                    };
+                    comment.save();
+
                     campground.comments.push(comment);
                     campground.save();
                     res.redirect('/campgrounds/' + id);
