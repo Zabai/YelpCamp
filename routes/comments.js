@@ -3,7 +3,7 @@ const router = require('express').Router({mergeParams: true}),
     Campground = mongoose.model('Campground'),
     Comment = mongoose.model('Comment');
 
-// Base /campgrounds/:id/comments
+// Base: /campgrounds/:id/comments
 // NEW
 router.get('/new', (req, res, next) => {
     const id = req.params.id;

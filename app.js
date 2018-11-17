@@ -3,11 +3,14 @@ const express = require('express'),
     path = require('path'),
     cookieParser = require('cookie-parser'),
     logger = require('morgan'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    passport = require('passport'),
+    LocalStrategy = require('passport-local');
 
 mongoose.connect('mongodb://localhost/yelp_camp');
 
 // Models
+require('./models/User');
 require('./models/Campground');
 require('./models/Comment');
 require('./config/seed');
@@ -25,6 +28,24 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(require('express-session')({
+    secret: "This should be secure",
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(mongoose.model('User').authenticate()));
+passport.serializeUser(mongoose.model('User').serializeUser());
+passport.deserializeUser(mongoose.model('User').deserializeUser());
+
+// Global vars
+app.use((req, res, next) => {
+    res.locals.user = req.user;
+    next();
+});
+
 // Routing
 app.use(require('./routes'));
 
@@ -41,7 +62,7 @@ app.use((err, req, res, next) => {
 
     // Render the error page
     res.status(err.status || 500);
-    res.send('error');
+    res.send('error' + err);
 });
 
 module.exports = app;
