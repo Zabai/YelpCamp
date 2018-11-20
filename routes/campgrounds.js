@@ -1,7 +1,8 @@
 const router = require('express').Router(),
     mongoose = require('mongoose'),
     Campground = mongoose.model('Campground'),
-    isLoggedIn = require('../middlewares/authentication').isLoggedIn;
+    isLoggedIn = require('../middlewares/authentication').isLoggedIn,
+    checkCampgroundOwnership = require('../middlewares/authorization').checkCampgroundOwnership;
 
 // Base: /campgrounds
 // INDEX
@@ -45,17 +46,17 @@ router.post('/', isLoggedIn, (req, res, next) => {
 });
 
 // EDIT
-router.get('/:id/edit', (req, res, next) => {
+router.get('/:id/edit', checkCampgroundOwnership, (req, res, next) => {
     const id = req.params.id;
 
     Campground.findById(id, (err, campground) => {
         if(err) console.log(err);
-        else res.render('campgrounds/edit.ejs', {campground: campground})
+        else res.render('campgrounds/edit.ejs', {campground: campground});
     });
 });
 
 // UPDATE
-router.put('/:id', (req, res, next) => {
+router.put('/:id', checkCampgroundOwnership, (req, res, next) => {
     const id = req.params.id;
     const campground = req.body.campground;
 
@@ -66,7 +67,7 @@ router.put('/:id', (req, res, next) => {
 });
 
 // DELETE
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', checkCampgroundOwnership, (req, res, next) => {
     const id = req.params.id;
     Campground.findByIdAndRemove(id, (err) => {
         if(err) res.redirect('/campgrounds');
