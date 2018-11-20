@@ -44,4 +44,34 @@ router.post('/', isLoggedIn, (req, res, next) => {
     });
 });
 
+// EDIT
+router.get('/:id/edit', (req, res, next) => {
+    const id = req.params.id;
+
+    Campground.findById(id, (err, campground) => {
+        if(err) console.log(err);
+        else res.render('campgrounds/edit.ejs', {campground: campground})
+    });
+});
+
+// UPDATE
+router.put('/:id', (req, res, next) => {
+    const id = req.params.id;
+    const campground = req.body.campground;
+
+    Campground.findByIdAndUpdate(id, campground, (err, updatedCampground) => {
+        if(err) console.log(err);
+        else res.redirect('/campgrounds/' + id);
+    });
+});
+
+// DELETE
+router.delete('/:id', (req, res, next) => {
+    const id = req.params.id;
+    Campground.findByIdAndRemove(id, (err) => {
+        if(err) res.redirect('/campgrounds');
+        else res.redirect('/campgrounds');
+    });
+});
+
 module.exports = router;

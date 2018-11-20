@@ -2,6 +2,7 @@ const express = require('express'),
     createError = require('http-errors'),
     path = require('path'),
     cookieParser = require('cookie-parser'),
+    methodOverride = require('method-override'),
     logger = require('morgan'),
     mongoose = require('mongoose'),
     passport = require('passport'),
@@ -26,6 +27,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
+app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(require('express-session')({
