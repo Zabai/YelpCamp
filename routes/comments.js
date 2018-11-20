@@ -37,4 +37,36 @@ router.post('/', (req, res, next) => {
     });
 });
 
+// EDIT
+router.get('/:comment_id/edit', (req, res, next) => {
+    const campgroundId = req.params.id;
+    const commentId = req.params.comment_id;
+    Comment.findById(commentId, (err, comment) => {
+        if(err) res.redirect('/campgrounds/' + id);
+        else res.render('comments/edit.ejs', {campgroundId: campgroundId, comment: comment});
+    });
+});
+
+// UPDATE
+router.put('/:comment_id', (req, res, next) => {
+    const campgroundId = req.params.id;
+    const commentId = req.params.comment_id;
+    const comment = req.body.comment;
+
+    Comment.findByIdAndUpdate(commentId, comment, (err, updatedComment) =>{
+        if(err) res.redirect('/campgrounds/' + campgroundId + '/comments/' + commentId + '/edit');
+        else res.redirect('/campgrounds/' + campgroundId);
+    })
+});
+
+// DELETE
+router.delete('/:comment_id', (req, res, next) => {
+    const campgroundId = req.params.id;
+    const commentId = req.params.comment_id;
+
+    Comment.findByIdAndRemove(commentId, (err) => {
+        res.redirect('/campgrounds/' + campgroundId);
+    });
+});
+
 module.exports = router;
