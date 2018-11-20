@@ -1,7 +1,8 @@
 const router = require('express').Router({mergeParams: true}),
     mongoose = require('mongoose'),
     Campground = mongoose.model('Campground'),
-    Comment = mongoose.model('Comment');
+    Comment = mongoose.model('Comment'),
+    checkCommentOwnership = require('../middlewares/authorization').checkCommentOwnership;
 
 // Base: /campgrounds/:id/comments
 // Requirements: user authenticated
@@ -38,7 +39,7 @@ router.post('/', (req, res, next) => {
 });
 
 // EDIT
-router.get('/:comment_id/edit', (req, res, next) => {
+router.get('/:comment_id/edit', checkCommentOwnership, (req, res, next) => {
     const campgroundId = req.params.id;
     const commentId = req.params.comment_id;
     Comment.findById(commentId, (err, comment) => {
@@ -48,7 +49,7 @@ router.get('/:comment_id/edit', (req, res, next) => {
 });
 
 // UPDATE
-router.put('/:comment_id', (req, res, next) => {
+router.put('/:comment_id', checkCommentOwnership, (req, res, next) => {
     const campgroundId = req.params.id;
     const commentId = req.params.comment_id;
     const comment = req.body.comment;
@@ -60,7 +61,7 @@ router.put('/:comment_id', (req, res, next) => {
 });
 
 // DELETE
-router.delete('/:comment_id', (req, res, next) => {
+router.delete('/:comment_id', checkCommentOwnership, (req, res, next) => {
     const campgroundId = req.params.id;
     const commentId = req.params.comment_id;
 

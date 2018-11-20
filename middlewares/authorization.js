@@ -15,5 +15,20 @@ module.exports = {
         } else {
             res.redirect('back');
         }
+    },
+
+    checkCommentOwnership: function(req, res, next) {
+        const campgroundId = req.params.id;
+        const commentId = req.params.comment_id;
+
+        Comment.findById(commentId, (err, comment) => {
+            if(err) res.redirect('/campgrounds/' + campgroundId);
+            else {
+                if(comment.author.id.equals(req.user._id))
+                    next();
+                else
+                    res.redirect('/campgrounds/' + campgroundId);
+            }
+        });
     }
 };
