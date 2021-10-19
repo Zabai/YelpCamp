@@ -16,13 +16,16 @@ const seedDb = async () => {
   await Campground.deleteMany({});
   for (let i = 0; i < 50; i++) {
     const campground = new Campground({
-      title: faker.name.title(),
+      description: faker.lorem.paragraph(),
+      image: 'https://source.unsplash.com/collection/483251',
       location: faker.address.cityName(),
+      price: faker.commerce.price(),
+      title: faker.name.title(),
     });
     await campground.save();
   }
 };
 
 seedDb().then(() => {
-    mongoose.connection.close();
+  mongoose.connection.close();
 });
